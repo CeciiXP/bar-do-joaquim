@@ -1,0 +1,7 @@
+{
+  "name": "Bar do Joaquim",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
