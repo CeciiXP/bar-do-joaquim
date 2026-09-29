@@ -1,0 +1,40 @@
+.login-container {
+  max-width: 420px;
+  margin: 2rem auto;
+
+  h2 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    color: var(--ion-color-medium);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.custom-item {
+  margin-bottom: 1rem;
+  --highlight-color-focused: var(--ion-color-primary);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--ion-color-medium);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--ion-color-light-shade);
+  }
+
+  span {
+    padding: 0 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}

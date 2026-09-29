@@ -1,0 +1,59 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="success">
+    <ion-title slot="start">Bar do Joaquim</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/comanda" color="light">Comanda</ion-button>
+      <ion-button routerLink="/home" color="light">Sair</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding content-bg">
+  <h2 class="greeting">Olá, Ryan</h2>
+
+  <!-- Filtros no estilo pílula -->
+  <div class="filter-container">
+    <button 
+      *ngFor="let cat of categorias" 
+      class="filter-pill" 
+      [class.active]="categoriaSelecionada === cat.value"
+      (click)="filtrarCategoria(cat.value)">
+      {{ cat.label }}
+    </button>
+  </div>
+
+  <!-- Lista de Produtos -->
+  <div class="products-list">
+    <div class="product-card" *ngFor="let item of produtosFiltrados">
+      <h3 class="product-title">{{ item.nome }}</h3>
+      <p class="product-price">R$ {{ item.preco.toFixed(2).replace('.', ',') }}</p>
+
+      <div class="badges-container">
+        <!-- Badge da Categoria -->
+        <span class="badge badge-category">{{ getCategoryLabel(item.categoria) }}</span>
+
+        <!-- Badge de quantidade na comanda -->
+        <span *ngIf="item.comandaCount > 0" class="badge badge-comanda">
+          Na comanda: {{ item.comandaCount }}
+        </span>
+
+        <!-- Badges condicionais por produto -->
+        <span *ngIf="item.nome === 'Porção de batata'" class="badge badge-warning">
+          Últimas unidades
+        </span>
+        <span *ngIf="item.nome === 'Brigadeiro'" class="badge badge-danger">
+          Esgotado
+        </span>
+      </div>
+
+      <ion-button 
+        expand="block" 
+        color="dark" 
+        class="add-button" 
+        [disabled]="item.nome === 'Brigadeiro'"
+        (click)="adicionarAComanda(item)">
+        Colocar na comanda
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

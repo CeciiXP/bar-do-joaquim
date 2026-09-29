@@ -1,7 +1,7 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular'; // Importe o NavController para navegação suave de retorno
 import { 
   IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, 
   IonInput, IonButton, IonIcon, IonToast, IonCard, IonCardContent, 
@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider } from '../services/firebase.config';
 
 @Component({
@@ -32,18 +32,17 @@ export class LoginPage {
   isToastOpen = false;
   toastColor: 'success' | 'danger' = 'success';
 
-  constructor(
-    private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {
+  constructor(private navCtrl: NavController) {
+
     addIcons({ arrowBackOutline, logoGoogle });
   }
 
+
   voltarInicio() {
-    this.router.navigate(['/home']);
+    this.navCtrl.navigateBack('/home');
   }
 
-  loginWithEmail() {
+  async loginWithEmail() {
     if (!this.email || !this.password) {
       this.showToast('Por favor, preencha todos os campos.', 'danger');
       return;
@@ -51,27 +50,25 @@ export class LoginPage {
 
     this.loading = true;
 
-    // Desativa o loading e redireciona direto sem travar a interface
-    setTimeout(() => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
+      this.showToast(`Bem-vindo, ${userCredential.user.email}!`, 'success');
+    } catch (error: any) {
+      this.showToast('E-mail ou senha incorretos.', 'danger');
+    } finally {
       this.loading = false;
-      this.cdr.detectChanges(); // Força o Angular a atualizar o estado do botão
-      this.showToast(`Bem-vindo, ${this.email}!`, 'success');
-      this.router.navigate(['/cardapio']);
-    }, 300);
+    }
   }
 
   async loginWithGoogle() {
     this.loading = true;
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      this.loading = false;
-      this.cdr.detectChanges();
       this.showToast(`Olá, ${result.user.displayName}`, 'success');
-      this.router.navigate(['/cardapio']);
     } catch (error: any) {
-      this.loading = false;
-      this.cdr.detectChanges();
       this.showToast('Falha no login com Google.', 'danger');
+    } finally {
+      this.loading = false;
     }
   }
 
